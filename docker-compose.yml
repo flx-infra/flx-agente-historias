@@ -1,0 +1,64 @@
+# ---------------------------------------------------------------------------
+# flx-agente-historias: Specs de historias de usuario de Jira (funcional, tecnico, diseno y Gherkin)
+#
+# Codigo e imagen: bitbucket.org/flexxus_id/flx-agente-historias
+# Este repo es solo el stack: lo que Portainer despliega.
+#
+# La pantalla y el sondeo de Jira corren aca; los agentes (equipo "historias" de flx-agentes), en flx-agentes-runner.
+# El codigo del proyecto, el ERP y la API salen de flx-mcp-codigo (via el runner). Los datos van a flx-agentes-db
+# (tabla historias_docs). Se entra por el portal flx-agentes-web (/historias/, permiso lector o editor).
+#
+# Puerto publicado (PORT_PUBLICO) solo para el /mcp de Claude Code (con MCP_TOKEN); la pantalla va por el portal.
+# Sin volumenes: todo el estado esta en Postgres.
+#
+# Variables del stack: SERVICE_NAME, NODE, LOKI_URL, PORT_PUBLICO, JIRA_EMAIL, WEB_URL y los secretos
+# JIRA_TOKEN, RUNNER_TOKEN (el RUNNER_TOKEN_HISTORIAS del runner), PORTAL_SECRET, FIGMA_TOKEN (opcional)
+# y MCP_TOKEN (opcional).
+# ---------------------------------------------------------------------------
+version: '3.6'
+
+services:
+  web:
+    image: fabreguesm/flx-agente-historias:0.1.0
+    hostname: flx-agente-historias
+    ports:
+      - target: 3000
+        published: ${PORT_PUBLICO}
+        protocol: tcp
+        mode: ingress
+    environment:
+      - TZ=America/Argentina/Buenos_Aires
+      - PGHOST=flx-agentes-db_postgres
+      - PGUSER=flx_agentes
+      - PGDATABASE=flx_agentes
+      - JIRA_URL=https://flexxus.atlassian.net
+      - JIRA_EMAIL=${JIRA_EMAIL}
+      - JIRA_TOKEN=${JIRA_TOKEN}
+      - RUNNER_URL=http://flx-agentes-runner_runner:3000
+      - RUNNER_TOKEN=${RUNNER_TOKEN}
+      - AGENTE_URL=http://flx-agente-historias_web:3000/mcp-agente
+      # Detras del portal flx-agentes-web: mismo PORTAL_SECRET que el portal.
+      - PORTAL_SECRET=${PORTAL_SECRET}
+      - FIGMA_TOKEN=${FIGMA_TOKEN}
+      - MCP_TOKEN=${MCP_TOKEN}
+      # Link a la web en el comentario de Jira (ej. http://10.250.0.98:8095/historias). Vacio, sin link.
+      - WEB_URL=${WEB_URL}
+      - MAX_PARALELO=2
+    networks:
+      - default
+      - agentes
+    deploy:
+      placement:
+        constraints: ["${NODE}"]
+      restart_policy:
+        condition: any
+        delay: 10s
+    logging:
+      driver: loki
+      options:
+        loki-url: ${LOKI_URL}
+
+networks:
+  agentes:
+    external: true
+    name: flx-agentes
