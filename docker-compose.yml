@@ -12,14 +12,14 @@
 # Sin volumenes: todo el estado esta en Postgres.
 #
 # Variables del stack: SERVICE_NAME, NODE, LOKI_URL, PORT_PUBLICO, JIRA_EMAIL, WEB_URL y los secretos
-# JIRA_TOKEN, RUNNER_TOKEN (el RUNNER_TOKEN_HISTORIAS del runner), PORTAL_SECRET, FIGMA_TOKEN (opcional, solo lectura)
-# y MCP_TOKEN (opcional).
+# JIRA_TOKEN, RUNNER_TOKEN (el RUNNER_TOKEN_HISTORIAS del runner), PORTAL_SECRET, FIGMA_TOKEN (opcional)
+# MCP_TOKEN (opcional) y DEV_TOKEN (el mismo del stack flx-agente-desarrollo: ciclo de desarrollo).
 # ---------------------------------------------------------------------------
 version: '3.6'
 
 services:
   web:
-    image: fabreguesm/flx-agente-historias:0.7.0
+    image: fabreguesm/flx-agente-historias:0.8.0
     hostname: flx-agente-historias
     ports:
       - target: 3000
@@ -44,6 +44,9 @@ services:
       # Link a la web en el comentario de Jira (ej. http://10.250.0.98:8095/historias). Vacio, sin link.
       - WEB_URL=${WEB_URL}
       - MAX_PARALELO=2
+      # 0.8.0: ciclo de desarrollo (ejecutor flx-agente-desarrollo, red flx-agentes)
+      - DEV_URL=http://flx-agente-desarrollo_dev:3000
+      - DEV_TOKEN=${DEV_TOKEN}
     networks:
       - default
       - agentes
