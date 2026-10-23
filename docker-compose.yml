@@ -19,7 +19,7 @@ version: '3.6'
 
 services:
   web:
-    image: fabreguesm/flx-agente-historias:0.14.0
+    image: fabreguesm/flx-agente-historias:0.15.0
     hostname: flx-agente-historias
     ports:
       - target: 3000
@@ -47,6 +47,8 @@ services:
       # 0.8.0: ciclo de desarrollo (ejecutor flx-agente-desarrollo, red flx-agentes)
       - DEV_URL=http://flx-agente-desarrollo_dev:3000
       - DEV_TOKEN=${DEV_TOKEN}
+      # Base de testing del proyecto, solo lectura, para el equipo de specs (desde 0.15.0): mysql://usuario:clave@host:puerto/base
+      - BASE_SPEC_URL=${BASE_SPEC_URL}
     networks:
       - default
       - agentes
