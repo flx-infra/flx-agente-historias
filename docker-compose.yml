@@ -12,14 +12,14 @@
 # Sin volumenes: todo el estado esta en Postgres.
 #
 # Variables del stack: SERVICE_NAME, NODE, LOKI_URL, PORT_PUBLICO, JIRA_EMAIL, WEB_URL y los secretos
-# JIRA_TOKEN, RUNNER_TOKEN (el RUNNER_TOKEN_HISTORIAS del runner), PORTAL_SECRET, FIGMA_TOKEN (registra la conexion del MCP de Figma: diseno obligatorio)
+# JIRA_TOKEN, RUNNER_TOKEN (el RUNNER_TOKEN_HISTORIAS del runner), PORTAL_SECRET, FIGMA_TOKEN (opcional, solo lectura)
 # y MCP_TOKEN (opcional).
 # ---------------------------------------------------------------------------
 version: '3.6'
 
 services:
   web:
-    image: fabreguesm/flx-agente-historias:0.6.1
+    image: fabreguesm/flx-agente-historias:0.7.0
     hostname: flx-agente-historias
     ports:
       - target: 3000
