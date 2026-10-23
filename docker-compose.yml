@@ -19,7 +19,7 @@ version: '3.6'
 
 services:
   web:
-    image: fabreguesm/flx-agente-historias:0.8.0
+    image: fabreguesm/flx-agente-historias:0.8.1
     hostname: flx-agente-historias
     ports:
       - target: 3000
